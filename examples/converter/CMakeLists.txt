@@ -29,10 +29,10 @@ add_custom_command(TARGET ConverterExample POST_BUILD
   COMMAND_EXPAND_LISTS
 )
 
-# Expected location of the granny2 dll.
-set(GRANNY_DLL "${PROJECT_SOURCE_DIR}/../../external/granny2/granny2.dll")
+# Expected location of the granny2_x64.dll.
+set(GRANNY_DLL "${PROJECT_SOURCE_DIR}/../../external/granny2/granny2_x64.dll")
 
-# Copy granny2 dll.
+# Copy granny2_x64.dll.
 if(EXISTS ${GRANNY_DLL})
   add_custom_command(TARGET ConverterExample POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${GRANNY_DLL} $<TARGET_FILE_DIR:ConverterExample>
