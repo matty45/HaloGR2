@@ -24,7 +24,7 @@ set(FBXSDK_INCLUDE "C:/Program\ Files/Autodesk/FBX/FBX\ SDK/2020.3.7/include")
 ```
 
 ### Setup granny2
-Download an application with a licensed version of granny2 and copy its `granny2_x64.dll` to `external/granny2/granny2_x64.dll`. The version of the `granny2_x64.dll` should be at least 2.9 up to 2.12 - tested version is 2.11 (recommended version).
+Go to the root of HREK and copy its `granny2_x64.dll` to `external/granny2/granny2_x64.dll`. The version of the `granny2_x64.dll` should be at least 2.9 up to 2.12 - tested version is 2.11 (recommended version).
 
 ## Setup IDE
 Use Qt Creator (recommended for now) or the IDE of your choice for development, build or to adapt the library in your projects - see more below under section "How to use".
