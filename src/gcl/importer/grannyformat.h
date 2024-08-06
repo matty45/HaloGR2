@@ -92,6 +92,7 @@ struct GrannyDataTypeDefinition {
 ///
 /// \brief Stores all data of a texture.
 ///
+#pragma pack(push,1)
 struct GrannyTexture {
 	char const* FromFileName;
 	int TextureType;
@@ -104,12 +105,15 @@ struct GrannyTexture {
 	GrannyTextureImage* Images;
 	GrannyVariant ExtendedData;
 };
+#pragma pack(pop)
+static_assert(sizeof(GrannyTexture) == 0x5c);
 
 struct GrannyMaterialMap;
 
 ///
 /// \brief Stores all data of a material.
 ///
+#pragma pack(push,1)
 struct GrannyMaterial {
 	char const* Name;
 	int MapCount;
@@ -117,6 +121,9 @@ struct GrannyMaterial {
 	GrannyTexture* Texture;
 	GrannyVariant ExtendedData;
 };
+#pragma pack(pop)
+static_assert(sizeof(GrannyMaterial) == 0x2c);
+
 
 ///
 /// \brief Stores a material map.
@@ -126,12 +133,16 @@ struct GrannyMaterialMap {
 	GrannyMaterial* Material;
 };
 
+static_assert(sizeof(GrannyMaterialMap) == 0x10);
+
 ///
 /// \brief Stores a reference to a material.
 ///
 struct GrannyMaterialBinding {
 	GrannyMaterial* Material;
 };
+
+static_assert(sizeof(GrannyMaterialBinding) == 0x8);
 
 ///
 /// \brief Stores all transform data of a transformation.
@@ -143,6 +154,8 @@ struct GrannyTransform {
 	float ScaleShear[3][3];
 };
 
+static_assert(sizeof(GrannyTransform) == 0x44);
+
 ///
 /// \brief Stores a variant of animation curve.
 ///
@@ -150,9 +163,47 @@ struct GrannyCurve2 {
 	GrannyVariant CurveData;
 };
 
+static_assert(sizeof(GrannyCurve2) == 0x10);
+
+///
+/// \brief Stores all data of an animation vector track.
+///
+#pragma pack(push,1)
+struct GrannyVectorTrack {
+	char const* Name;
+	unsigned int TrackKey;
+	int Dimension;
+	GrannyCurve2 ValueCurve;
+};
+#pragma pack(pop)
+static_assert(sizeof(GrannyVectorTrack) == 0x20);
+
+#pragma pack(push,1)
+struct GrannyTextTrackEntry
+{
+	float TimeStamp;
+	char* Text;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(GrannyTextTrackEntry) == 0xc);
+
+///
+/// \brief Stores all data of an animation text track.
+///
+#pragma pack(push,1)
+struct GrannyTextTrack {
+	char const* Name;
+	int EntryCount;
+	GrannyTextTrackEntry* Entries;
+};
+#pragma pack(pop)
+static_assert(sizeof(GrannyTextTrack) == 0x14);
+
 ///
 /// \brief Stores all data of an animation transform track.
 ///
+#pragma pack(push,1)
 struct GrannyTransformTrack {
 	char const* Name;
 	int Flags;
@@ -160,33 +211,47 @@ struct GrannyTransformTrack {
 	GrannyCurve2 PositionCurve;
 	GrannyCurve2 ScaleShearCurve;
 };
+#pragma pack(pop)
+static_assert(sizeof(GrannyTransformTrack) == 0x3c);
+
+struct GrannyPeriodicLoop
+{
+	float Radius;
+	float dAngle;
+	float dZ;
+	float BasisX[3];
+	float BasisY[3];
+	float Axis[3];
+};
+static_assert(sizeof(GrannyPeriodicLoop) == 0x30);
 
 ///
 /// \brief Stores all data of an animation track group.
 ///
+#pragma pack(push,1)
 struct GrannyTrackGroup {
-	char const* Name;
-	void* VectorTrackCount;
-
-	//void* VectorTracks;
-	//int TransformTrackCount;
-	//GrannyTransformTrack* TransformTracks;
-	//void* TransformLODErrorCount;
-	//void* TransformLODErrors;
-	//void* TextTrackCount;
-	//void* TextTracks;
-	//GrannyTransform InitialPlacement;
-	//int Flags;
-	//void* LoopTranslation;
-	//void* PeriodicLoop;
-	//GrannyVariant ExtendedData;
+	char* Name;
+	int VectorTrackCount;
+	GrannyVectorTrack* VectorTracks;
+	int TransformTrackCount;
+	GrannyTransformTrack* TransformTracks;
+	int TransformLODErrorCount;
+	float* TransformLODErrors;
+	int TextTrackCount;
+	GrannyTextTrack* TextTracks;
+	GrannyTransform InitialPlacement;
+	int Flags;
+	float LoopTranslation[3];
+	GrannyPeriodicLoop* PeriodicLoop;
+	GrannyVariant ExtendedData;
 };
-
+#pragma pack(pop)
 static_assert(sizeof(GrannyTrackGroup) == 0xa4);
 
 ///
 /// \brief Stores all data of a bone binding.
 ///
+#pragma pack(push,1)
 struct GrannyBoneBinding {
 	char const* BoneName;
 	GrannyTriple OBBMin;
@@ -194,10 +259,13 @@ struct GrannyBoneBinding {
 	int TriangleCount;
 	int* TriangleIndices;
 };
+#pragma pack(pop)
+static_assert(sizeof(GrannyBoneBinding) == 0x2c);
 
 ///
 /// \brief Stores all data of a bone.
 ///
+#pragma pack(push,1)
 struct GrannyBone {
 	char const* Name;
 	int ParentIndex;
@@ -206,10 +274,13 @@ struct GrannyBone {
 	float LODError;
 	GrannyVariant ExtendedData;
 };
+#pragma pack(pop)
+static_assert(sizeof(GrannyBone) == 0xa4);
 
 ///
 /// \brief Stores all data of a skeleton.
 ///
+#pragma pack(push,1)
 struct GrannySkeleton {
 	char const* Name;
 	int BoneCount;
@@ -217,6 +288,24 @@ struct GrannySkeleton {
 	int LODType;
 	GrannyVariant ExtendedData;
 };
+#pragma pack(pop)
+static_assert(sizeof(GrannySkeleton) == 0x28);
+
+///
+/// \brief Stores all data of a triangle annotation set.
+///
+#pragma pack(push,1)
+struct GrannyTriAnnotationSet {
+	char const* Name;
+	GrannyDataTypeDefinition* TriAnnotationType;
+	int TriAnnotationCount;
+	unsigned char* TriAnnotations;
+	int IndicesMapFromTriToAnnotation;
+	int TriAnnotationIndexCount;
+	int* TriAnnotationIndices;
+};
+#pragma pack(pop)
+static_assert(sizeof(GrannyTriAnnotationSet) == 0x2c);
 
 ///
 /// \brief Stores all data of a triangle group.
@@ -227,9 +316,12 @@ struct GrannyTriMaterialGroup {
 	int TriCount;
 };
 
+static_assert(sizeof(GrannyTriMaterialGroup) == 0xc);
+
 ///
 /// \brief Stores all data of a triangle.
 ///
+#pragma pack(push,1)
 struct GrannyTriTopology {
 	int GroupCount;
 	GrannyTriMaterialGroup* Groups;
@@ -243,39 +335,69 @@ struct GrannyTriTopology {
 	int* VertexToTriangleMap;
 	int SideToNeighborCount;
 	unsigned int* SideToNeighborMap;
-	int PolygonIndexStartCount;
-	int* PolygonIndexStarts;
-	int PolygonIndexCount;
-	int* PolygonIndices;
 	int BonesForTriangleCount;
 	int* BonesForTriangle;
 	int TriangleToBoneCount;
 	int* TriangleToBoneIndices;
 	int TriAnnotationSetCount;
-	void* TriAnnotationSets;
+	GrannyTriAnnotationSet* TriAnnotationSets;
 };
+#pragma pack(pop)
+static_assert(sizeof(GrannyTriTopology) == 0x6c);
+
+///
+/// \brief Stores all data of a vertex annotation set.
+///
+#pragma pack(push,1)
+struct GrannyVertexAnnotationSet {
+	char const* Name;
+	GrannyDataTypeDefinition* VertexAnnotationType;
+	int VertexAnnotationCount;
+	unsigned char* VertexAnnotations;
+	int IndicesMapFromVertexToAnnotation;
+	int VertexAnnotationIndexCount;
+	int* VertexAnnotationIndices;
+};
+#pragma pack(pop)
+static_assert(sizeof(GrannyVertexAnnotationSet) == 0x2c);
 
 ///
 /// \brief Stores all vertex data of a mesh.
 ///
+#pragma pack(push,1)
 struct GrannyVertexData {
 	GrannyDataTypeDefinition* VertexType;
 	int VertexCount;
 	unsigned char* Vertices;
 	int VertexComponentNameCount;
-	char const** VertexComponentNames;
+	char** VertexComponentNames;
 	int VertexAnnotationSetCount;
-	void* VertexAnnotationSets;
+	GrannyVertexAnnotationSet* VertexAnnotationSets;
 };
+#pragma pack(pop)
+static_assert(sizeof(GrannyVertexData) == 0x2c);
+
+///
+/// \brief Stores all morph target data of a mesh.
+///
+#pragma pack(push,1)
+struct GrannyMorphTarget {
+	char* ScalarName;
+	GrannyVertexData* VertexData;
+	int DataIsDeltas;
+};
+#pragma pack(pop)
+static_assert(sizeof(GrannyMorphTarget) == 0x14);
 
 ///
 /// \brief Stores all data of a mesh.
 ///
+#pragma pack(push,1)
 struct GrannyMesh {
 	char const* Name;
 	GrannyVertexData* PrimaryVertexData;
 	int MorphTargetCount;
-	void* MorphTargets;
+	GrannyMorphTarget* MorphTargets;
 	GrannyTriTopology* PrimaryTopology;
 	int MaterialBindingCount;
 	GrannyMaterialBinding* MaterialBindings;
@@ -283,6 +405,8 @@ struct GrannyMesh {
 	GrannyBoneBinding* BoneBindings;
 	GrannyVariant ExtendedData;
 };
+#pragma pack(pop)
+static_assert(sizeof(GrannyMesh) == 0x4c);
 
 ///
 /// \brief Stores a reference to a mesh also called MeshBinding.
@@ -302,6 +426,8 @@ struct GrannyModel {
 	GrannyModelMeshBinding* MeshBindings;
 	GrannyVariant ExtendedData;
 };
+
+static_assert(sizeof(GrannyModel) == 0x70);
 
 ///
 /// \brief Stores vertex data of a variant of 4 components based vertex structure.
@@ -367,6 +493,8 @@ struct GrannyCurveDataHeader {
 	unsigned char Degree;
 };
 
+static_assert(sizeof(GrannyCurveDataHeader) == 0x2);
+
 ///
 /// \brief Stores animation curve data for variant of a keyframe based constant curve.
 ///
@@ -419,6 +547,8 @@ struct GrannyAnimation {
 	GrannyVariant ExtendedData;
 };
 
+static_assert(sizeof(GrannyAnimation) == 0x38);
+
 #define GrannyNoParentBone -1
 
 ///
@@ -432,27 +562,104 @@ enum GrannyTransformFlags {
 };
 
 ///
+/// \brief Stores section indexes and their offsets.
+///
+struct GrannyRef
+{
+	unsigned int SectionIndex;
+	unsigned int Offset;
+};
+
+///
+/// \brief Stores all header data of a granny file.
+///
+struct GrannyFileHeader {
+	unsigned int Version;
+	unsigned int TotalSize;
+	unsigned int CRC;
+	unsigned int SectionArrayOffset;
+	unsigned int SectionArrayCount;
+	GrannyRef RootObjectTypeDefinition;
+	GrannyRef RootObject;
+	unsigned int TypeTag;
+	unsigned int ExtraTags[4];
+	unsigned int StringDatabaseCRC;
+	unsigned int ReservedUnused[3];
+};
+
+static_assert(sizeof(GrannyFileHeader) == 0x48);
+
+///
+/// \brief Stores all header magic data of a granny file.
+///
+struct GrannyFileMagic {
+	unsigned int MagicValue[4];
+	unsigned int HeaderSize;
+	unsigned int HeaderFormat;
+	unsigned int Reserved[2];
+};
+
+static_assert(sizeof(GrannyFileMagic) == 0x20);
+
+///
 /// \brief Stores all header and data blocks of a granny file.
 ///
+#pragma pack(push,1)
 struct GrannyFile {
-	void* IsByteReversed;
-	void* Header;
-	void* SourceMagicValue;
-	void* SectionCount;
+	int IsByteReversed;
+	GrannyFileHeader* Header;
+	GrannyFileMagic* SourceMagicValue;
+	int SectionCount;
 	void** Sections;
 	bool* Marshalled;
 	bool* IsUserMemory;
 	void* ConversionBuffer;
-	unsigned int ConversionBufferSize;
 };
+#pragma pack(pop)
+static_assert(sizeof(GrannyFile) == 0x38);
+
+///
+/// \brief Stores data related to the tool used to make the granny file.
+///
+#pragma pack(push,1)
+struct GrannyArtToolInfo {
+	char const* FromArtToolName;
+	int ArtToolMajorRevision;
+	int ArtToolMinorRevision;
+	int ArtToolPointerSize;
+	float UnitsPerMeter;
+	float Origin[3];
+	float RightVector[3];
+	float UpVector[3];
+	float BackVector[3];
+	GrannyVariant ExtendedData;
+};
+#pragma pack(pop)
+static_assert(sizeof(GrannyArtToolInfo) == 0x58);
+
+///
+/// \brief Stores data related to the exporter script/tool/whatever used to export the granny file.
+///
+#pragma pack(push,1)
+struct GrannyExporterInfo {
+	char* ExporterName;
+	int ExporterMajorRevision;
+	int ExporterMinorRevision;
+	int ExporterCustomization;
+	int ExporterBuildNumber;
+	GrannyVariant ExtendedData;
+};
+#pragma pack(pop)
+static_assert(sizeof(GrannyExporterInfo) == 0x28);
 
 ///
 /// \brief Stores all raw data of a granny file.
 ///
+#pragma pack(push,1)
 struct GrannyFileInfo {
-	void* ArtToolInfo;
-	void* ExporterInfo;
-	char const* FromFileName;
+	GrannyArtToolInfo* ArtToolInfo;
+	GrannyExporterInfo* ExporterInfo;
+	char* FromFileName;
 	int TextureCount;
 	GrannyTexture** Textures;
 	int MaterialCount;
@@ -460,7 +667,7 @@ struct GrannyFileInfo {
 	int SkeletonCount;
 	GrannySkeleton** Skeletons;
 	int VertexDataCount;
-	void* VertexDatas;
+	GrannyVertexData** VertexDatas;
 	int TriTopologyCount;
 	GrannyTriTopology** TriTopologies;
 	int MeshCount;
@@ -473,6 +680,8 @@ struct GrannyFileInfo {
 	GrannyAnimation** Animations;
 	GrannyVariant ExtendedData;
 };
+#pragma pack(pop)
+static_assert(sizeof(GrannyFileInfo) == 0x94);
 
 ///
 /// \brief Scene transform flags.
