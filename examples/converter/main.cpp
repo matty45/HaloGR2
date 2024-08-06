@@ -20,6 +20,8 @@ int main()
 	GCL::Importer::GrannyImporter importer(options);
 
 	// Load a character and a animation.
+	//importer.importFromFile("gryphon.gr2");
+
 	importer.importFromFile("test_fbx_civilian_female_render.gr2");
 	importer.importFromFile("test_fbx_civilian_female_skeleton.gr2");
 	importer.importFromFile("patrol unarmed idle.gr2");

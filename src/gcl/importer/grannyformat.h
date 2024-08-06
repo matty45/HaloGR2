@@ -124,7 +124,6 @@ struct GrannyMaterial {
 #pragma pack(pop)
 static_assert(sizeof(GrannyMaterial) == 0x2c);
 
-
 ///
 /// \brief Stores a material map.
 ///
@@ -457,13 +456,20 @@ struct GrannyPWNT3432Vertex {
 ///  N: Normal
 ///  T: Texture coordinates for uv channel 1 and 2
 ///
-static GrannyDataTypeDefinition GrannyPWNT34322VertexType[] = {
+static GrannyDataTypeDefinition HaloVertexType[] = {
 	{ GrannyReal32Member, "Position", 0, 3 },
 	{ GrannyNormalUInt8Member, "BoneWeights", 0, 4 },
 	{ GrannyUInt8Member, "BoneIndices", 0, 4 },
 	{ GrannyReal32Member, "Normal", 0, 3 },
-	{ GrannyReal32Member, GrannyVertexTextureCoordinatesName "0", 0, 2 },
-	{ GrannyReal32Member, GrannyVertexTextureCoordinatesName "1", 0, 2 },
+	{ GrannyReal32Member, GrannyVertexTextureCoordinatesName "0", 0, 3 },
+	{ GrannyReal32Member, GrannyVertexTextureCoordinatesName "1", 0, 3 },
+	{ GrannyReal32Member, GrannyVertexTextureCoordinatesName "2", 0, 3 },
+	{ GrannyReal32Member, GrannyVertexTextureCoordinatesName "3", 0, 3 },
+	{ GrannyReal32Member, "TextureCoordinateslighting", 0, 3 },
+	{ GrannyReal32Member, "colourSet1", 0, 3 },
+	{ GrannyReal32Member, "colourSet2", 0, 3 },
+	{ GrannyReal32Member, "blend_shape", 0, 3 },
+	{ GrannyReal32Member, "TextureCoordinates_vertex_id", 0, 2 },
 	{ GrannyEndMember },
 };
 
@@ -476,14 +482,22 @@ static GrannyDataTypeDefinition GrannyPWNT34322VertexType[] = {
 ///  N: Normal
 ///  T: Texture coordinates for uv channel 1 (UV1) and 2 (UV2)
 ///
+#pragma pack(push,1)
 struct GrannyPWNT34322Vertex {
 	float Position[3];
 	unsigned char BoneWeights[4];
 	unsigned char BoneIndices[4];
 	float Normal[3];
-	float UV1[2];
-	float UV2[2];
+	float UV1[3];
+	float UV2[3];
+	float UV3[3];
+	float TextureCoordinateslighting[3];
+	float colourSet1[3];
+	float colourSet2[3];
+	float blend_shape[3];
+	float TextureCoordinates_vertex_id[2];
 };
+#pragma pack(pop)
 
 ///
 /// \brief Stores header of an animation curve like curve format or degree elevation of a curve.
@@ -498,6 +512,7 @@ static_assert(sizeof(GrannyCurveDataHeader) == 0x2);
 ///
 /// \brief Stores animation curve data for variant of a keyframe based constant curve.
 ///
+#pragma pack(push,1)
 struct GrannyCurveDataDAK32fC32f {
 	GrannyCurveDataHeader CurveDataHeader;
 	short Padding;
@@ -506,6 +521,8 @@ struct GrannyCurveDataDAK32fC32f {
 	int ControlCount;
 	float* Controls;
 };
+#pragma pack(pop)
+static_assert(sizeof(GrannyCurveDataDAK32fC32f) == 0x1c);
 
 ///
 /// \brief Stores all granny curve data formats.
@@ -704,6 +721,7 @@ typedef int(__stdcall* GrannyGetMeshIndexCount_t)(GrannyMesh const* Mesh);
 typedef void(__stdcall* GrannyCopyMeshIndices_t)(GrannyMesh const* Mesh, int BytesPerIndex, void* DestIndices);
 typedef void(__stdcall* GrannyBuildCompositeTransform4x4_t)(GrannyTransform const* Transform, float* Composite4x4);
 typedef bool(__stdcall* GrannyMeshIsRigid_t)(GrannyMesh const* Mesh);
+typedef GrannyDataTypeDefinition(__stdcall* GrannyGetMeshVertexType_t)(GrannyMesh const* Mesh);
 
 typedef bool(__stdcall* GrannyComputeBasisConversion_t)(
 	GrannyFileInfo const* FileInfo,
@@ -805,7 +823,8 @@ typedef void(__stdcall* GrannyCopyTextureImage_t)(
 inline GrannyReadEntireFile_t GrannyReadEntireFile = nullptr;
 inline GrannyGetFileInfo_t GrannyGetFileInfo = nullptr;
 inline GrannyFreeFile_t GrannyFreeFile = nullptr;
-inline GrannyDataTypeDefinition* GrannyPWNT3432VertexType = 0;
+
+//inline GrannyDataTypeDefinition* GrannyPWNT3432VertexType = 0;
 inline GrannyGetTotalTypeSize_t GrannyGetTotalTypeSize = nullptr;
 inline GrannyGetMeshVertexCount_t GrannyGetMeshVertexCount = nullptr;
 inline GrannyGetMeshIndexCount_t GrannyGetMeshIndexCount = nullptr;
